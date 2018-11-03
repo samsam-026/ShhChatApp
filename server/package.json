@@ -1,0 +1,20 @@
+{
+  "name": "invoicing_vue",
+  "version": "1.0.0",
+  "description": "A simple chat app with a vue template",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Sameeha Rahman",
+  "license": "MIT",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4",
+    "method-override": "^2.1.3",
+    "mocha": "^5.2.0",
+    "mongoose": "^5.3.9",
+    "morgan": "^1.9.1"
+  }
+}
