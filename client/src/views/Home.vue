@@ -29,30 +29,18 @@
 
 <script>
 import axios from "axios";
-import { mapState, mapActions } from "vuex";
+import { mapState } from "vuex";
 import { UserStore } from "../stores/UserStore";
 
 export default {
   name: "Home",
-  data() {
-    return {
-      userList: []
-    };
-  },
   computed: {
     ...mapState({
-      currentUser: state => state.UserStore.currentUser,
-      resultsFetching: state => state.UserStore.fetching
+      resultsFetching: state => state.UserStore.fetching,
+      userList: state => state.UserStore.allUsers,
+      currentUser: state => state.UserStore.currentUser
     })
   },
-  created() {
-    this.getAllUsers().then(users => {
-      this.userList = users;
-    });
-  },
-  methods: {
-    ...mapActions("UserStore", ["getAllUsers"])
-  }
 };
 </script>
 

@@ -20,9 +20,27 @@ const actions = {
             })
             .then(response => {
                 if (response.status === 200) {
-                    localStorage.setItem("username", username);
-                    commit('loginSuccess', username);
-                    router.push("home");
+                    let userList = [];
+                    let userUrl = "http://localhost:4000/all";
+                    axios
+                        .post(userUrl, {
+                            username: username
+                        })
+                        .then(response => {
+                            if (response.status === 200) {
+                                userList = response.data;
+                                commit("setAllUsers", userList);
+                            } else {
+                                commit('requestFailed', response.data);
+                            }
+                            commit('loginSuccess', username);
+                            router.push("home");
+                        })
+                        .catch(error => {
+                            if (error.toString() === "Error: Network Error") {
+                                commit('requestFailed', "Please connect to the internet and try again.");
+                            }
+                        });
                 } else {
                     commit('loginFailed', response.data);
                 }
@@ -47,8 +65,29 @@ const actions = {
             })
             .then(response => {
                 if (response.status === 200) {
-                    commit('registerSuccess', username);
-                    router.push("home");
+
+                    let userList = [];
+                    let userUrl = "http://localhost:4000/all";
+                    axios
+                        .post(userUrl, {
+                            username: username
+                        })
+                        .then(response => {
+                            if (response.status === 200) {
+                                userList = response.data;
+                                commit("setAllUsers", userList);
+                            } else {
+                                commit('requestFailed', response.data);
+                            }
+                            commit('registerSuccess', username);
+                            router.push("home");
+                        })
+                        .catch(error => {
+                            if (error.toString() === "Error: Network Error") {
+                                commit('requestFailed', "Please connect to the internet and try again.");
+                            }
+                        });
+
                 } else {
                     commit('registerFailed', response.data);
                 }
@@ -59,12 +98,11 @@ const actions = {
                 }
             });
     },
-    getAllUsers({ commit }) {
-        let username = localStorage.getItem("username");
+    getAllUsers({ commit }, { username }) {
         let userList = [];
         commit('requestSent');
         let url = "http://localhost:4000/all";
-        return axios
+        axios
             .post(url, {
                 username: username
             })
@@ -75,12 +113,13 @@ const actions = {
                 } else {
                     commit('requestFailed', response.data);
                 }
-                return userList;
+                return;
             })
             .catch(error => {
                 if (error.toString() === "Error: Network Error") {
                     commit('requestFailed', "Please connect to the internet and try again.");
                 }
+                return;
             });
     }
 }
@@ -126,6 +165,6 @@ const mutations = {
 export const UserStore = {
     namespaced: true,
     state,
-    actions,
-    mutations
+  actions,
+  mutations
 };
