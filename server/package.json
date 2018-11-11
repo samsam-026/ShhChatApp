@@ -4,7 +4,7 @@
   "description": "A simple chat app with a vue template",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha _test/*.test.js"
   },
   "author": "Sameeha Rahman",
   "license": "MIT",
@@ -17,5 +17,9 @@
     "mocha": "^5.2.0",
     "mongoose": "^5.3.9",
     "morgan": "^1.9.1"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "chai-http": "^4.2.0"
   }
 }
