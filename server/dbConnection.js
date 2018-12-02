@@ -8,7 +8,10 @@ if (process.env.NODE_ENV === "test") {
 }
 
 mongoose
-  .connect(database)
+  .connect(database, {
+    useCreateIndex: true,
+    useNewUrlParser: true
+  })
   .then(() => {
     console.log("Database connection successful");
   })
@@ -19,5 +22,7 @@ mongoose
 mongoose.Promise = global.Promise;
 
 module.exports = {
-  User: require("./models/User")
+  User: require("./models/User"),
+  Chat: require("./models/Chat"),
+  Message: require("./models/Message")
 };
