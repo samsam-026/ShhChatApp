@@ -1,59 +1,92 @@
 <template>
-<div id="wrapper" class="toggled">
+  <div id="wrapper">
     <!-- Sidebar -->
     <div id="sidebar-wrapper">
-        <ul class="sidebar-nav">
-            <li class="sidebar-brand">
-                <a href="#">
-                        Start Bootstrap
-                    </a>
-            </li>
-            <li v-for="user of userList" :key="user.username">
-                <a href="#">{{user.username}}</a>
-            </li>
-            <div v-if="resultsFetching" class="loader"></div>
-        </ul>
+      <ul class="sidebar-nav">
+        <li class="sidebar-brand">
+          <a>{{currentUser.username}}</a>
+        </li>
+        <li class="sidebar-msg">
+          <a>All Chats</a>
+        </li>
+        <div v-if="chatList.length > 0">
+          <li v-for="chat of chatList" :key="chat._id">
+            <a @click="pickChat(chat)">{{chat.recipient.username}}</a>
+          </li>
+        </div>
+        <li v-else class="sidebar-msg">
+          <a>No Current Chats</a>
+        </li>
+        <!-- <li class="sidebar-msg">
+          <a>All Users</a>
+        </li>
+        <div v-if="userList.length > 0">
+          <li v-for="user of userList" :key="user._id">
+            <a @click="pickRecip(user)">{{user.username}}</a>
+          </li>
+        </div>-->
+      </ul>
     </div>
-    <!-- /#sidebar-wrapper -->
 
     <!-- Page Content -->
-    <div id="page-content-wrapper">
-        <div class="container-fluid">
-            <h1>Simple Sidebar</h1>
-        </div>
+    <div v-if="this.recipient.username" id="page-content-wrapper">
+      <MessageChat :recipientUser="this.recipient.username"/>
     </div>
-    <!-- /#page-content-wrapper -->
-
-</div>
+    <div v-else id="page-content-wrapper"></div>
+  </div>
 </template>
 
 <script>
-import axios from "axios";
-import { mapState } from "vuex";
-import { UserStore } from "../stores/UserStore";
+import { mapState, mapActions } from "vuex";
+import MessageChat from "../components/MessageChat";
 
 export default {
   name: "Home",
+  components: {
+    MessageChat
+  },
+  data() {
+    return {
+      recipient: {}
+    };
+  },
   computed: {
     ...mapState({
       resultsFetching: state => state.UserStore.fetching,
+      chatList: state => state.UserStore.allChats,
       userList: state => state.UserStore.allUsers,
       currentUser: state => state.UserStore.currentUser
     })
   },
+  methods: {
+    ...mapActions("UserStore", [
+      "getAllUsers",
+      "getAllChats",
+      "getMessageForChat"
+    ]),
+    pickRecip: function(user) {
+      this.recipient = user;
+    },
+    pickChat: function(chat) {
+      this.recipient = chat.recipient;
+      this.getMessageForChat({ chat });
+    }
+  },
+  mounted() {
+    const { currentUser } = this;
+    const currentUserId = currentUser._id;
+    this.getAllUsers({ currentUserId });
+    this.getAllChats({ currentUserId });
+  }
 };
 </script>
 
-<style>
-#wrapper {
-  padding-left: 0;
-  -webkit-transition: all 0.5s ease;
-  -moz-transition: all 0.5s ease;
-  -o-transition: all 0.5s ease;
-  transition: all 0.5s ease;
+<style scoped>
+body {
+  height: 100%;
 }
 
-#wrapper.toggled {
+#wrapper {
   padding-left: 250px;
 }
 
@@ -61,30 +94,19 @@ export default {
   z-index: 1000;
   position: fixed;
   left: 250px;
-  width: 0;
   height: 100%;
   margin-left: -250px;
   overflow-y: auto;
   background: #000;
-  -webkit-transition: all 0.5s ease;
-  -moz-transition: all 0.5s ease;
-  -o-transition: all 0.5s ease;
-  transition: all 0.5s ease;
-}
-
-#wrapper.toggled #sidebar-wrapper {
   width: 250px;
 }
 
 #page-content-wrapper {
-  width: 100%;
+  width: -moz-calc(100% - 250px);
+  width: -webkit-calc(100% - 250px);
+  width: calc(100% - 250px);
   position: absolute;
-  padding: 15px;
-}
-
-#wrapper.toggled #page-content-wrapper {
-  position: absolute;
-  margin-right: -250px;
+  padding: 20px;
 }
 
 /* Sidebar Styles */
@@ -124,42 +146,29 @@ export default {
   height: 65px;
   font-size: 18px;
   line-height: 60px;
+  border-bottom-color: #fff;
+  border-bottom-width: 2px;
 }
 
-.sidebar-nav > .sidebar-brand a {
+.sidebar-nav > .sidebar-msg {
+  font-size: 14px;
+  border-bottom-color: #fff;
+  border-bottom-width: 2px;
+}
+
+.sidebar-nav > .sidebar-brand a,
+.sidebar-nav > .sidebar-msg a {
   color: #999999;
 }
 
-.sidebar-nav > .sidebar-brand a:hover {
-  color: #fff;
+.sidebar-nav > .sidebar-brand a:hover,
+.sidebar-nav > .sidebar-msg a:hover {
   background: none;
 }
 
 @media (min-width: 768px) {
-  #wrapper {
-    padding-left: 0;
-  }
-
-  #wrapper.toggled {
-    padding-left: 250px;
-  }
-
-  #sidebar-wrapper {
-    width: 0;
-  }
-
-  #wrapper.toggled #sidebar-wrapper {
-    width: 250px;
-  }
-
   #page-content-wrapper {
-    padding: 20px;
-    position: relative;
-  }
-
-  #wrapper.toggled #page-content-wrapper {
-    position: relative;
-    margin-right: 0;
+    height: 100%;
   }
 }
 </style>
