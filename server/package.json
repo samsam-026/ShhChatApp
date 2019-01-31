@@ -1,26 +1,26 @@
 {
-  "name": "invoicing_vue",
-  "version": "1.0.0",
-  "description": "A simple chat app with a vue template",
-  "main": "index.js",
-  "scripts": {
-    "test": "SET NODE_ENV=test&& mocha _test/*.test.js",
-    "start": "SET NODE_ENV=dev&& node server.js"
-  },
-  "author": "Sameeha Rahman",
-  "license": "MIT",
-  "dependencies": {
-    "bcryptjs": "^2.4.3",
-    "body-parser": "^1.18.3",
-    "cors": "^2.8.5",
-    "express": "^4.16.4",
-    "method-override": ">=2.3.10",
-    "mocha": "^5.2.0",
-    "mongoose": "^5.3.9",
-    "morgan": "^1.9.1"
-  },
-  "devDependencies": {
-    "chai": "^4.2.0",
-    "chai-http": "^4.2.0"
-  }
+	"name": "invoicing_vue",
+	"version": "1.0.0",
+	"description": "A simple chat app with a vue template",
+	"main": "index.js",
+	"scripts": {
+		"test": "SET NODE_ENV=test&& mocha _test/*.test.js",
+		"start": "SET NODE_ENV=dev&& node server.js"
+	},
+	"author": "Sameeha Rahman",
+	"license": "MIT",
+	"dependencies": {
+		"bcryptjs": "^2.4.3",
+		"body-parser": "^1.18.3",
+		"cors": "^2.8.5",
+		"express": "^4.16.4",
+		"method-override": ">=2.3.10",
+		"mocha": "^5.2.0",
+		"mongoose": "^5.3.9",
+		"morgan": "^1.9.1"
+	},
+	"devDependencies": {
+		"chai": "^4.2.0",
+		"chai-http": "^4.2.0"
+	}
 }

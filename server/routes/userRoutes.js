@@ -11,7 +11,7 @@ userRoutes.all("*", cors());
 //get list of all users
 userRoutes.post("/all", function (req, res) {
   try {
-    let currentUser = req.body.username;
+    let currentUser = req.body.currentUser;
     if (currentUser) {
       User.find({}, function (error, users) {
         let userList = [];
@@ -19,7 +19,7 @@ userRoutes.post("/all", function (req, res) {
           res.status(212).send({ error: "No other users." });
         } else {
           users.forEach(user => {
-            if (user.username !== currentUser) {
+            if (!user._id.equals(currentUser)) {
               userList.push({ username: user.username, id: user._id });
             }
           });
@@ -49,20 +49,18 @@ userRoutes.post("/register", function (req, res) {
           res.status(212).send({ error: "This user name has already been taken" });
         } else {
           var hash = bcrypt.hashSync(password, 10);
-          User.create(
-            {
-              username,
-              hash,
-              firstName,
-              lastName,
-              createdDate: new Date()
-            },
-            function (err, user) {
-              if (err) {
-                res.status(212).send({ error: err });
-              }
-              res.status(200).send({ currentUser: user );
+          User.create({
+            username,
+            hash,
+            firstName,
+            lastName,
+            createdDate: new Date()
+          }, function (err, user) {
+            if (err) {
+              res.status(212).send({ error: err });
             }
+            res.status(200).send({ currentUser: user });
+          }
           );
         }
       });

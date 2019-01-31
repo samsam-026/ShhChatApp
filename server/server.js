@@ -9,6 +9,7 @@ app.use(bodyParser.json());
 
 // api routes
 app.use("/", require("./routes/userRoutes"));
+app.use("/", require("./routes/messageRoutes"));
 
 app.get("/", function(req, res) {
   res.send("Welcome to Shhh Chat App");
