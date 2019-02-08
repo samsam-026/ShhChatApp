@@ -6,6 +6,8 @@ const messageRoute = express.Router();
 const db = require("../dbConnection");
 const Chat = db.Chat;
 const Message = db.Message;
+const User = db.User;
+
 messageRoute.all("*", cors());
 
 messageRoute.post("/getChats", function (req, res) {
@@ -137,8 +139,24 @@ messageRoute.post("/startChat", function (req, res) {
           if (err) {
             res.status(212).send({ error: err });
           }
-
-          res.status(200).json({ message: 'Chat started!', chatId: chat._id });
+          let chatObject = newChat.toObject();
+          chatObject.body = composedMessage;
+          chatObject.chatId = newChat._id;
+          chatObject.author = currentUser;
+          delete chatObject.participants;
+          User.findById(receiver)
+            .exec(function (err, user) {
+              if (err) {
+                res.status(212).send({ error: err });
+              }
+              if (user) {
+                let recipient = { id: user._id, username: user.username };
+                chatObject.recipient = recipient
+                res.status(200).json({ newChat: chatObject });
+              } else {
+                res.status(212).send({ error: "no user" });
+              }
+            });
         });
       });
     } else {

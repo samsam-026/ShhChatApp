@@ -17,28 +17,78 @@
         <li v-else class="sidebar-msg">
           <a>No Current Chats</a>
         </li>
-        <!-- <li class="sidebar-msg">
-          <a>All Users</a>
+        <li>
+          <button
+            type="button"
+            class="btn btn-primary"
+            data-toggle="modal"
+            data-target="#userModal"
+          >Start new chat</button>
         </li>
-        <div v-if="userList.length > 0">
-          <li v-for="user of userList" :key="user._id">
-            <a @click="pickRecip(user)">{{user.username}}</a>
-          </li>
-        </div>-->
       </ul>
     </div>
 
     <!-- Page Content -->
-    <div v-if="this.recipient.username" id="page-content-wrapper">
+    <div v-if="this.chat && this.recipient && this.recipient.username" id="page-content-wrapper">
       <MessageChat :recipientUser="this.recipient.username"/>
     </div>
     <div v-else id="page-content-wrapper"></div>
+
+    <!-- Modal -->
+    <div
+      class="modal fade"
+      id="userModal"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="exampleModalCenterTitle"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <div class="input-group">
+              <textarea
+                class="form-control"
+                style="resize:none"
+                placeholder="Type a message"
+                v-model="newMessage"
+              ></textarea>
+            </div>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body modalBodyContainer">
+            <div v-if="userList.length > 0">
+              <div class="form-check" v-for="user of userList" :key="user._id">
+                <input
+                  class="form-check-input"
+                  type="radio"
+                  name="userChat"
+                  id="userChat"
+                  v-on:click="pickRecip(user)"
+                >
+                <label class="form-check-label" for="userChat">{{user.username}}</label>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer center">
+            <button
+              type="button"
+              class="btn btn-primary"
+              v-on:click.prevent="startNewChat"
+            >Start chat</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import { mapState, mapActions } from "vuex";
 import MessageChat from "../components/MessageChat";
+import $ from "jquery";
 
 export default {
   name: "Home",
@@ -47,7 +97,9 @@ export default {
   },
   data() {
     return {
-      recipient: {}
+      recipient: {},
+      newMessage: "",
+      chat: false
     };
   },
   computed: {
@@ -62,14 +114,27 @@ export default {
     ...mapActions("UserStore", [
       "getAllUsers",
       "getAllChats",
-      "getMessageForChat"
+      "getMessageForChat",
+      "startChat"
     ]),
     pickRecip: function(user) {
       this.recipient = user;
+      this.chat = false;
     },
     pickChat: function(chat) {
       this.recipient = chat.recipient;
-      this.getMessageForChat({ chat });
+      this.chat = true;
+      this.getMessageForChat({
+        chat
+      });
+    },
+    startNewChat: function() {
+      const { newMessage, recipient, currentUser } = this;
+      const receiver = recipient.id;
+      const message = newMessage;
+      $("#userModal").modal("hide");
+      this.startChat({ currentUser, receiver, message });
+      this.chat = true;
     }
   },
   mounted() {
@@ -164,6 +229,17 @@ body {
 .sidebar-nav > .sidebar-brand a:hover,
 .sidebar-nav > .sidebar-msg a:hover {
   background: none;
+}
+
+.modalBodyContainer {
+  height: 70%;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.center {
+  align-content: center;
+  align-items: center;
 }
 
 @media (min-width: 768px) {

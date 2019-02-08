@@ -54,9 +54,12 @@ export default {
     ...mapActions("UserStore", ["getMessageForChat", "addMessage"]),
     sendMessage: function() {
       const { currentUser, chat, message } = this;
-      console.log(chat);
       this.addMessage({ currentUser, chat, message });
     }
+  },
+  mounted() {
+    const { chat } = this;
+    this.getMessageForChat({ chat });
   }
 };
 </script>

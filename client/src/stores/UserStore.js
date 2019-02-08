@@ -5,13 +5,11 @@ const state = {
   currentUser: JSON.parse(sessionStorage.getItem("currentUser") || "{}"),
   allUsers: JSON.parse(sessionStorage.getItem("userList") || "[]"),
   allChats: JSON.parse(sessionStorage.getItem("chatList") || "[]"),
-  currentFullChat: JSON.parse(
-    sessionStorage.getItem("currentFullChat") || "[]"
-  ),
+  currentFullChat: [],
   loginError: "",
   fetching: false,
   registerError: "",
-  currentChat: JSON.parse(sessionStorage.getItem("currentChatId") || "{}")
+  currentChat: {}
 };
 
 const actions = {
@@ -26,8 +24,6 @@ const actions = {
           commit("loginSuccess", currentUser);
           sessionStorage.setItem("currentUser", JSON.stringify(currentUser));
           router.push("home");
-          dispatch("getAllUsers", { currentUserId: currentUser._id });
-          dispatch("getAllChats", { currentUserId: currentUser._id });
         } else {
           commit("loginFailed", response.data.error);
         }
@@ -52,7 +48,6 @@ const actions = {
           commit("registerSuccess", currentUser);
           sessionStorage.setItem("currentUser", JSON.stringify(currentUser));
           router.push("home");
-          dispatch("getAllUsers", { currentUser: currentUser._id });
         } else {
           commit("registerFailed", response.data.error);
         }
@@ -122,8 +117,9 @@ const actions = {
       })
       .then(response => {
         if (response.status === 200) {
-          let newChat = response.data.chatId;
+          let newChat = response.data.newChat;
           commit("updateChatList", newChat);
+          commit("setCurrentChat", newChat);
           sessionStorage.setItem("currentChatId", JSON.stringify(newChat));
         }
       })
@@ -231,8 +227,7 @@ const mutations = {
     state.fetching = false;
   },
   updateChatList(state, newChat) {
-    state.allChats.push({ newChat });
-    state.currentChat = newChat.id;
+    state.allChats.push(newChat);
   },
   setCurrentChatMessages(state, fullChat) {
     state.currentFullChat = fullChat;
