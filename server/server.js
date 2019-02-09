@@ -14,7 +14,7 @@ app.use("/", require("./routes/messageRoutes"));
 
 app.use((err, req, res, next) => {
   if (err instanceof expressValidation.ValidationError) {
-    res.status(err.status).json(err);
+    res.status(500).json(err);
   } else {
     res.status(500)
       .json({
