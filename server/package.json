@@ -4,7 +4,7 @@
 	"description": "A simple chat app with a vue template",
 	"main": "index.js",
 	"scripts": {
-		"test": "SET NODE_ENV=test&& mocha _test/*.test.js",
+		"test": "SET NODE_ENV=test&& mocha",
 		"start": "SET NODE_ENV=dev&& nodemon server.js"
 	},
 	"author": "Sameeha Rahman",
