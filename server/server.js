@@ -3,6 +3,7 @@ const app = express();
 const bodyParser = require("body-parser");
 const config = require("./config.js");
 const PORT = config.APP_PORT;
+const expressValidation = require('express-validation');
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -11,7 +12,27 @@ app.use(bodyParser.json());
 app.use("/", require("./routes/userRoutes"));
 app.use("/", require("./routes/messageRoutes"));
 
-app.get("/", function(req, res) {
+app.use((err, req, res, next) => {
+  if (err instanceof expressValidation.ValidationError) {
+    res.status(err.status).json(err);
+  } else {
+    res.status(500)
+      .json({
+        status: err.status,
+        message: err.message
+      });
+  }
+});
+
+app.use((err, req, res, next) => {
+  if (!err) {
+    return next();
+  }
+
+  res.status(500).json({ err: err });
+});
+
+app.get("/", function (req, res) {
   res.send("Welcome to Shhh Chat App");
 });
 
