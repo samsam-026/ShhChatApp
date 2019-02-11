@@ -1,16 +1,16 @@
-const db = require("../dbConnection");
+const bcrypt = require('bcryptjs');
+const db = require('../dbConnection');
 const User = db.User;
-const bcrypt = require("bcryptjs");
 
 module.exports = {
     // POST /api/all
-    allUsers: function (req, res) {
+    allUsers: function allUsers(req, res) {
         try {
             let currentUser = req.body.currentUser;
             User.find({}, function (error, users) {
                 let userList = [];
                 if (users === null) {
-                    return res.status(500).send({ error: "No other users." });
+                    return res.status(500).send({ error: 'No other users.' });
                 } else {
                     users.forEach(user => {
                         if (!user._id.equals(currentUser)) {
@@ -23,11 +23,11 @@ module.exports = {
                 }
             });
         } catch (err) {
-            return res.status(500).send({ error: "An error occured. Please try again." });
+            return res.status(500).send({ error: 'An error occured. Please try again.' });
         }
     },
     // POST /api/register
-    register: function (req, res) {
+    register: function register(req, res) {
         try {
             var username = req.body.username;
             var firstName = req.body.firstName;
@@ -35,7 +35,7 @@ module.exports = {
             var lastName = req.body.lastName;
             User.findOne({ username }, function (error, user) {
                 if (user) {
-                    return res.status(500).send({ error: "This user name has already been taken" });
+                    return res.status(500).send({ error: 'This user name has already been taken' });
                 } else {
                     var hash = bcrypt.hashSync(password, 10);
                     User.create({ username, hash, firstName, lastName, createdDate: new Date() },
@@ -49,11 +49,11 @@ module.exports = {
                 }
             });
         } catch (err) {
-            return res.status(500).send({ error: "An error occured. Please try again." });
+            return res.status(500).send({ error: 'An error occured. Please try again.' });
         }
     },
     // POST /api/signin
-    signin: function (req, res) {
+    signin: function signin(req, res) {
         try {
             var username = req.body.username;
             var password = req.body.password;
@@ -64,11 +64,11 @@ module.exports = {
                 if (user && bcrypt.compareSync(password, user.hash)) {
                     return res.status(200).send({ currentUser: user });
                 } else {
-                    return res.status(500).send({ error: "Email or Password is incorrect" });
+                    return res.status(500).send({ error: 'Email or Password is incorrect' });
                 }
             });
         } catch (err) {
-            return res.status(500).send({ error: "An error occured. Please try again." });
+            return res.status(500).send({ error: 'An error occured. Please try again.' });
         }
     },
 };

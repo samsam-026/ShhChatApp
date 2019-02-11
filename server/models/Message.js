@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const messageSchema = new Schema({
@@ -19,6 +19,6 @@ const messageSchema = new Schema({
     timestamps: true // Saves createdAt and updatedAt as dates. createdAt will be our timestamp.
   });
 
-messageSchema.set("toJSON", { virtuals: true });
+messageSchema.set('toJSON', { virtuals: true });
 
-module.exports = mongoose.model("Message", messageSchema);
+module.exports = mongoose.model('Message', messageSchema);

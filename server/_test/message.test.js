@@ -1,17 +1,17 @@
-var chai = require("chai");
-var chaiHttp = require("chai-http");
-var server;
+var chai = require('chai');
+var chaiHttp = require('chai-http');
+var mongoose = require('mongoose');
 var should = chai.should();
-var mongoose = require("mongoose");
-var Chat = require("../models/Chat");
-var Message = require("../models/Message");
-var Users = require("../models/User");
+var Chat = require('../models/Chat');
+var Message = require('../models/Message');
+var Users = require('../models/User');
+var server;
 
 chai.use(chaiHttp);
 
-describe("Message", function () {
+describe('Message', function () {
     before(function (done) {
-        server = require("../server").server;
+        server = require('../server').server;
 
         //clear the following collections in the test DB 
         Chat.deleteMany({}, err => {
@@ -32,44 +32,48 @@ describe("Message", function () {
         });
     });
 
-    it("should give success response for get all messages for correct and complete data", function (done) {
+    it('should give success response for get all messages for correct and complete data', function (done) {
 
         chai
             .request(server)
-            .post("/register")
+            .post('/register')
             .send({
-                username: "fcukuiku",
-                password: "stuff780",
-                firstName: "Smeesh",
-                lastName: "Smeesh"
+                username: 'fcukuiku',
+                password: 'stuff780',
+                firstName: 'Smeesh',
+                lastName: 'Smeesh'
             })
             .end(function (err, resUser1) {
+                if (err) { console.error(err); }
                 chai
                     .request(server)
-                    .post("/register")
+                    .post('/register')
                     .send({
-                        username: "zrdgrdd",
-                        password: "stuff780",
-                        firstName: "Smeesh",
-                        lastName: "Smeesh"
+                        username: 'zrdgrdd',
+                        password: 'stuff780',
+                        firstName: 'Smeesh',
+                        lastName: 'Smeesh'
                     })
                     .end(function (err, resUser2) {
+                        if (err) { console.error(err); }
                         chai
                             .request(server)
-                            .post("/startChat")
+                            .post('/startChat')
                             .send({
                                 currentUser: resUser1.body.currentUser._id,
                                 receiver: resUser2.body.currentUser._id,
-                                composedMessage: "Hello"
+                                composedMessage: 'Hello'
                             })
                             .end(function (err, resChat) {
+                                if (err) { console.error(err); }
                                 chai
                                     .request(server)
-                                    .post("/getMessages")
+                                    .post('/getMessages')
                                     .send({
                                         chatId: resChat.body.newChat.chatId
                                     })
                                     .end(function (err, res) {
+                                        if (err) { console.error(err); }
                                         res.should.have.status(200);
                                         done();
                                     });
@@ -78,70 +82,76 @@ describe("Message", function () {
             });
     });
 
-    it("should give fail response for get all messages for incomplete data", function (done) {
+    it('should give fail response for get all messages for incomplete data', function (done) {
         chai
             .request(server)
-            .post("/getMessages")
+            .post('/getMessages')
             .send({})
             .end(function (err, res) {
+                if (err) { console.error(err); }
                 res.should.have.status(500);
                 done();
             });
     });
 
-    it("should give fail response for get all messages for incorrect data", function (done) {
+    it('should give fail response for get all messages for incorrect data', function (done) {
         chai
             .request(server)
-            .post("/getMessages")
+            .post('/getMessages')
             .send({
-                chatId: "gdrtftyugy"
+                chatId: 'gdrtftyugy'
             })
             .end(function (err, res) {
+                if (err) { console.error(err); }
                 res.should.have.status(500);
                 done();
             });
     });
 
-    it("should give success response for adding a message for correct and complete data", function (done) {
+    it('should give success response for adding a message for correct and complete data', function (done) {
 
         chai
             .request(server)
-            .post("/register")
+            .post('/register')
             .send({
-                username: "dryjthdr",
-                password: "stuff780",
-                firstName: "Smeesh",
-                lastName: "Smeesh"
+                username: 'dryjthdr',
+                password: 'stuff780',
+                firstName: 'Smeesh',
+                lastName: 'Smeesh'
             })
             .end(function (err, resUser1) {
+                if (err) { console.error(err); }
                 chai
                     .request(server)
-                    .post("/register")
+                    .post('/register')
                     .send({
-                        username: "vnvbnmhmh",
-                        password: "stuff780",
-                        firstName: "Smeesh",
-                        lastName: "Smeesh"
+                        username: 'vnvbnmhmh',
+                        password: 'stuff780',
+                        firstName: 'Smeesh',
+                        lastName: 'Smeesh'
                     })
                     .end(function (err, resUser2) {
+                        if (err) { console.error(err); }
                         chai
                             .request(server)
-                            .post("/startChat")
+                            .post('/startChat')
                             .send({
                                 currentUser: resUser1.body.currentUser._id,
                                 receiver: resUser2.body.currentUser._id,
-                                composedMessage: "Hello"
+                                composedMessage: 'Hello'
                             })
                             .end(function (err, resChat) {
+                                if (err) { console.error(err); }
                                 chai
                                     .request(server)
-                                    .post("/addMessage")
+                                    .post('/addMessage')
                                     .send({
                                         currentUser: resUser1.body.currentUser._id,
                                         chatId: resChat.body.newChat.chatId,
-                                        composedMessage: "Hi!"
+                                        composedMessage: 'Hi!'
                                     })
                                     .end(function (err, res) {
+                                        if (err) { console.error(err); }
                                         res.should.have.status(200);
                                         done();
                                     });
@@ -150,29 +160,31 @@ describe("Message", function () {
             });
     });
 
-    it("should give fail response for adding a message for incomplete data", function (done) {
+    it('should give fail response for adding a message for incomplete data', function (done) {
         chai
             .request(server)
-            .post("/addMessage")
+            .post('/addMessage')
             .send({
-                composedMessage: "Hi!"
+                composedMessage: 'Hi!'
             })
             .end(function (err, res) {
+                if (err) { console.error(err); }
                 res.should.have.status(500);
                 done();
             });
     });
 
-    it("should give fail response for adding a message for incorrect data", function (done) {
+    it('should give fail response for adding a message for incorrect data', function (done) {
         chai
             .request(server)
-            .post("/addMessage")
+            .post('/addMessage')
             .send({
-                currentUser: "gdrtftyugy",
-                chat: "fhcfdhdrgzsr",
-                composedMessage: "Hi!"
+                currentUser: 'gdrtftyugy',
+                chat: 'fhcfdhdrgzsr',
+                composedMessage: 'Hi!'
             })
             .end(function (err, res) {
+                if (err) { console.error(err); }
                 res.should.have.status(500);
                 done();
             });

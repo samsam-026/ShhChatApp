@@ -1,21 +1,21 @@
-const db = require("../dbConnection");
+const db = require('../dbConnection');
 const Chat = db.Chat;
 const Message = db.Message;
 const User = db.User;
 
 module.exports = {
     // POST /api/getChats
-    allChats: function (req, res) {
+    allChats: function allChats(req, res) {
         try {
             let currentUser = req.body.currentUser;
             Chat.find({ participants: currentUser })
                 .select('_id participants')
-                .populate('participants', "username")
+                .populate('participants', 'username')
                 .exec(function (err, chats) {
                     if (err) {
                         return res.status(500).send({ error: err });
                     }
-                    if (chats.length > 0) {
+                    if (chats.length) {
                         let fullChats = [];
                         chats.forEach(function (chat) {
                             Message.find({ 'chatId': chat._id })
@@ -43,11 +43,11 @@ module.exports = {
                     }
                 });
         } catch (err) {
-            return res.status(500).send({ error: "An error occured. Please try again." });
+            return res.status(500).send({ error: 'An error occured. Please try again.' });
         }
     },
     // POST /api/getMessages
-    getMessages: function (req, res) {
+    getMessages: function getMessages(req, res) {
         try {
             let chatId = req.body.chatId;
             Message.find({ chatId })
@@ -60,11 +60,11 @@ module.exports = {
                     return res.status(200).json({ allMessages: messages.reverse() });
                 });
         } catch (err) {
-            return res.status(500).send({ error: "An error occured. Please try again." });
+            return res.status(500).send({ error: 'An error occured. Please try again.' });
         }
     },
     // POST /api/addMessage
-    addMessage: function (req, res) {
+    addMessage: function addMessage(req, res) {
         try {
             let currentUser = req.body.currentUser;
             let composedMessage = req.body.composedMessage;
@@ -90,11 +90,11 @@ module.exports = {
                     });
             });
         } catch (err) {
-            return res.status(500).send({ error: "An error occured. Please try again." });
+            return res.status(500).send({ error: 'An error occured. Please try again.' });
         }
     },
     // POST /api/startChat
-    startChat: function (req, res) {
+    startChat: function startChat(req, res) {
         try {
             let currentUser = req.body.currentUser;
             let receiver = req.body.receiver;
@@ -134,13 +134,13 @@ module.exports = {
                                 chatObject.recipient = recipient
                                 return res.status(200).json({ newChat: chatObject });
                             } else {
-                                return res.status(500).send({ error: "no user" });
+                                return res.status(500).send({ error: 'no user' });
                             }
                         });
                 });
             });
         } catch (err) {
-            return res.status(500).send({ error: "An error occured. Please try again." });
+            return res.status(500).send({ error: 'An error occured. Please try again.' });
         }
     }
 };
